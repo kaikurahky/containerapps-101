@@ -1,0 +1,3 @@
+scripts/set-env.sh
+__pycache__/
+*.pyc

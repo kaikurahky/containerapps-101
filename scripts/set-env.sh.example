@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+# このファイルを set-env.sh にコピーして source してください。
+# Azure リソース名の一意性を高めるため、サブスクリプションID由来の短いsuffixを使います。
+
+export LOCATION="japaneast"
+export RESOURCE_GROUP="rg-containerapps-101"
+export CONTAINERAPPS_ENVIRONMENT="cae-containerapps-101"
+export LOG_ANALYTICS_WORKSPACE="log-containerapps-101"
+export APP_NAME="ca101-web"
+export JOB_NAME="ca101-sim-job"
+export RESULT_CONTAINER="simulation-results"
+export SIMULATION_IMAGE="simulation:v1"
+export VNET_NAME="vnet-containerapps-101"
+export VNET_ADDRESS_PREFIX="10.20.0.0/16"
+export CONTAINERAPPS_SUBNET_NAME="snet-containerapps"
+export CONTAINERAPPS_SUBNET_PREFIX="10.20.0.0/27"
+export PRIVATE_ENDPOINT_SUBNET_NAME="snet-private-endpoints"
+export PRIVATE_ENDPOINT_SUBNET_PREFIX="10.20.1.0/27"
+export STORAGE_PRIVATE_ENDPOINT_NAME="pe-containerapps-101-blob"
+export STORAGE_PRIVATE_CONNECTION_NAME="psc-containerapps-101-blob"
+export STORAGE_PRIVATE_DNS_ZONE="privatelink.blob.core.windows.net"
+export STORAGE_PRIVATE_DNS_LINK="link-containerapps-101"
+export STORAGE_PRIVATE_DNS_GROUP="pdzg-containerapps-101-blob"
+
+SUBSCRIPTION_ID=$(az account show --query id --output tsv 2>/dev/null || true)
+if [[ -z "$SUBSCRIPTION_ID" ]]; then
+  echo "Azureへログインしてから、このファイルをsourceしてください。" >&2
+  return 1 2>/dev/null || exit 1
+fi
+
+SUFFIX=$(printf '%s' "$SUBSCRIPTION_ID" | sha256sum | cut -c1-8)
+export ACR_NAME="ca101acr${SUFFIX}"
+export STORAGE_ACCOUNT="ca101st${SUFFIX}"
+
+unset SUBSCRIPTION_ID SUFFIX
