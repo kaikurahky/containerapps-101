@@ -2,6 +2,61 @@
 
 この章では、Azure Storage Queueへ20件の作業メッセージを投入し、KEDAがQueue長を監視してContainer Apps JobのExecutionを自動的に増減させる動きを確認します。
 
+## このJobは何を実行するか
+
+実処理はリポジトリ内の `src/keda-job/keda_job.py` に定義されています。`src/keda-job/Dockerfile` がこのPythonファイルと依存ライブラリをイメージへ格納し、コンテナー起動時に `python keda_job.py` を実行します。Step 4でイメージをACRへ登録し、Step 6とStep 7で同じイメージから2種類のJobを作ります。
+
+| 区分 | 場所 | 内容 |
+|---|---|---|
+| Jobソース | `src/keda-job/keda_job.py` | Queueへの投入と、Queueから1件取得して処理するWorkerを定義する |
+| イメージ定義 | `src/keda-job/Dockerfile` | Python、Azure SDK、Jobソースを実行可能なイメージにする |
+| 依存ライブラリ | `src/keda-job/requirements.txt` | Managed Identity、Queue、Blobアクセスに使うAzure SDK |
+| Azure上のEvent Job定義 | この章のStep 6 | KEDAルール、最大実行数、CPU、メモリ、Worker用環境変数を設定する |
+| Azure上のSeeder Job定義 | この章のStep 7 | 20件を投入するManual JobとSeeder用環境変数を設定する |
+
+同じPythonファイルを `RUN_MODE` で切り替えます。
+
+| `RUN_MODE` | 呼び出す処理 | Jobの役割 |
+|---|---|---|
+| `seed` | `seed()` | `MESSAGE_COUNT`件の入力メッセージをQueueへ投入する |
+| `worker` | `process_one()` | Queueから1件受信し、処理、結果保存、メッセージ削除を行う |
+
+### 入力
+
+入力はローカルのファイルではなく、閉域Azure Storage Queueに保存されるJSONメッセージです。Seeder Jobが次の形式で20件作成します。
+
+```json
+{"batch_id":"keda-lab-20","task_id":"task-01"}
+```
+
+`task_id`は `task-01` から `task-20` までです。KEDAはメッセージ本文を処理せず、Queueに残っているメッセージ数だけを監視します。起動されたWorkerが1件を受信します。
+
+### Workerが行う処理
+
+この教材のWorkerは、実際の業務計算の代わりに `PROCESS_SECONDS=120` 秒待機して、時間のかかる処理を模擬します。その後、入力の `batch_id` と `task_id`、Execution名、Replica名、完了時刻を結果JSONにしてBlobへ保存します。実際の計算や変換処理へ置き換える場合は、`src/keda-job/keda_job.py` の `process_one()`内に実装します。
+
+### 出力
+
+結果はローカルディスクではなく、第4章で作成した閉域Blobコンテナーへ直接保存します。
+
+```text
+$RESULT_CONTAINER/keda-results/<batch_id>/<task_id>.json
+```
+
+この実習で20件すべて成功すると、次のように20個のJSON Blobが作られます。
+
+```text
+simulation-results/
+└── keda-results/
+  └── keda-lab-20/
+    ├── task-01.json
+    ├── task-02.json
+    ├── ...
+    └── task-20.json
+```
+
+各結果には `status`、`completed_at`、`execution_name`、`replica_name`、`batch_id`、`task_id` が入ります。標準出力の `task_started`、`result_uploaded`、`task_completed` はLog Analyticsへ送られ、処理過程の確認に使います。Queueメッセージは結果保存後に削除されるため、処理完了後は入力Queueが空になります。
+
 ## この実習で確認すること
 
 - KEDAは計算処理ではなく、イベント源を監視して必要な実行数を判断する

@@ -2,6 +2,42 @@
 
 この章では Python のモンテカルロ法で円周率を近似する Job を作ります。5秒ごとに進捗を出し、正常終了時は `results/`、停止シグナル受信時は `checkpoints/` にJSONを書きます。
 
+## このJobは何を実行するか
+
+実際の計算処理は、リポジトリ内の `src/simulation/simulation.py` に定義されています。`src/simulation/Dockerfile` がこのPythonファイルと依存ライブラリをコンテナーイメージへ格納し、コンテナー起動時に `python simulation.py` を実行します。Step 3でそのイメージをACRへ登録し、Step 7でContainer Apps Jobに設定します。
+
+| 区分 | 場所 | 内容 |
+|---|---|---|
+| Jobソース | `src/simulation/simulation.py` | モンテカルロ法で円周率を近似し、進捗と結果をJSONで出力する |
+| イメージ定義 | `src/simulation/Dockerfile` | Python、依存ライブラリ、Jobソースを実行可能なイメージにする |
+| 依存ライブラリ | `src/simulation/requirements.txt` | Managed IdentityとBlobアクセスに使うAzure SDK |
+| Azure上のJob定義 | この章のStep 4からStep 7 | イメージ、CPU、メモリ、環境変数、Identity、実行方法を設定する |
+
+### 入力
+
+このJobに入力ファイルはありません。計算条件はStep 7で設定する環境変数です。
+
+| 環境変数 | この実習の値 | 用途 |
+|---|---:|---|
+| `SIMULATION_STEPS` | 24 | 計算を分割するStep数 |
+| `STEP_SECONDS` | 5 | 進捗を観測しやすくする各Step後の待機秒数 |
+| `SAMPLES_PER_STEP` | 100000 | 1 Stepで生成する乱数点の数 |
+| `AZURE_STORAGE_ACCOUNT_URL` | StorageのBlob URL | 結果保存先Storage |
+| `RESULT_CONTAINER` | `simulation-results` | 結果保存先コンテナー |
+
+Jobは実行時に乱数を生成し、単位正方形内の点が単位円内へ入った割合から円周率を近似します。乱数のseedにはExecution名を使うため、Executionごとに計算系列が変わります。
+
+### 出力
+
+ローカルディスクへ結果ファイルは残しません。JSONファイルは閉域Storage AccountのBlobコンテナーへ直接保存します。
+
+| 終了方法 | Azure上の保存先 |
+|---|---|
+| 正常終了 | `$RESULT_CONTAINER/results/<Execution名>.json` |
+| 途中停止 | `$RESULT_CONTAINER/checkpoints/<Execution名>.json` |
+
+標準出力へ出す `simulation_started`、`progress`、`simulation_completed`、`result_uploaded` などのJSONログはLog Analyticsへ送られます。BlobのJSONが計算結果、Log Analyticsが実行過程の記録です。
+
 ## 完成構成
 
 ```mermaid
