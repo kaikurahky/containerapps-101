@@ -423,4 +423,4 @@ az containerapp job show \
   --output table
 ```
 
-Job が表示されれば再実行可能です。ここまでで必須実習は完了です。[5. 問題解決と後片付け](./05-troubleshooting-cleanup.md)へ進みます。
+Job が表示されれば再実行可能です。次は [5. KEDA オートスケール実習](./05-keda-autoscaling.md)へ進みます。

@@ -21,7 +21,9 @@ Job を停止する操作では、Job 定義ではなく対象 Execution を指�
 | Schedule | 5フィールドのcron式。評価はUTC | 夜間集計、定期バックアップ |
 | Event | KEDA scaler がQueueなどを監視 | メッセージ単位の画像変換 |
 
-この教材は Manual Job を使います。処理の開始と停止を自分で制御できるため、Execution の動きを理解しやすいからです。
+第4章は Manual Job を使い、開始と停止を自分で制御してExecutionの動きを学びます。第5章は Event Job を使い、KEDAがQueue長からExecution数を決める動きを学びます。
+
+KEDAはイベントそのものを処理しません。Queue長などのメトリックを監視して必要な実行数を算出し、実処理は起動されたJob Replicaが担当します。
 
 ## 3-3. 必須設定
 
