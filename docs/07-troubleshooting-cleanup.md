@@ -1,6 +1,8 @@
-# 6. 問題解決と後片付け
+# 7. 問題解決と後片付け
 
 この章の調査手順は、第2章のWeb App、第4章のManual Job、第5章のKEDA Event Jobに適用できます。
+
+リソース変更・権限付与・後片付けは管理者向けです。エンドユーザーは[第6章](./06-enduser-job-execution-process.md)に従って自分の実行を確認し、管理操作が必要な問題は管理者へ依頼してください。
 
 ## 問題調査の順番
 
@@ -15,7 +17,7 @@
 
 ## `AuthorizationFailed`
 
-現在のユーザーにリソース作成またはロール割り当て権限がありません。
+現在のユーザーに、要求した操作を対象スコープで行う権限がありません。まずサブスクリプション、対象リソース、エラーに示された操作名を確認します。
 
 ```bash
 az account show --output table
@@ -25,7 +27,7 @@ az role assignment list \
   --output table
 ```
 
-管理者へ対象 Resource Group の `Contributor` と、ロール割り当て用の `Role Based Access Control Administrator` など必要な権限を依頼します。
+構築担当者がリソース作成・権限付与を行う場合は、対象 Resource Group の `Contributor` と、ロール割り当て用の `Role Based Access Control Administrator` など必要な権限を管理者へ依頼します。エンドユーザーの開始・履歴・ログ確認エラーには、これらの管理者権限を追加せず、[第6章の利用権限](./06-enduser-job-execution-process.md)と対象スコープを管理者が確認します。
 
 ## Storage の `AuthorizationPermissionMismatch`
 

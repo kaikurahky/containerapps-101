@@ -120,7 +120,7 @@ simulation-results/
 | メッセージ投入 | Step 9 |
 | Execution確認 | Step 10からStep 12 |
 | ログ確認 | Step 9とStep 11 |
-| リソース削除 | 第6章 |
+| リソース削除 | [第7章](./07-troubleshooting-cleanup.md)（管理者向け） |
 
 ## この実習で確認すること
 
@@ -322,6 +322,8 @@ ACR_SERVER=$(az acr show \
 
 ## Step 5. KEDAとJobが使うManaged Identityを作る
 
+このStepのIdentity作成・RBAC設定と、Step 6・7のJobへの関連付けは管理者の初期構築作業です。メッセージ投入やExecution起動のたびに繰り返しません。構築後の利用者操作と必要権限は[第6章](./06-enduser-job-execution-process.md)を参照してください。
+
 KEDAのQueue長取得、SeederとWorkerのQueue操作、WorkerのBlob保存、ACR Pullに同じユーザー割り当てManaged Identityを使います。接続文字列やStorageキーは使いません。
 
 ```bash
@@ -498,20 +500,24 @@ az containerapp job show \
 
 ## Step 9. 20件を投入する
 
+Step 7で保存したSeeder Jobのイメージと環境変数（`RUN_MODE=seed`、`MESSAGE_COUNT=20`、`BATCH_ID=keda-lab-20`）をそのまま使って起動します。ここでは `--env-vars` を再指定しません。
+
 ```bash
-SEED_EXECUTION_NAME=$(az containerapp job start \
+if SEED_EXECUTION_NAME=$(az containerapp job start \
   --name "$QUEUE_SEEDER_JOB_NAME" \
   --resource-group "$RESOURCE_GROUP" \
-  --env-vars \
-    RUN_MODE=seed \
-    MESSAGE_COUNT=20 \
-    BATCH_ID=keda-lab-20 \
-  --query name --output tsv)
-
-echo "Seeder execution: $SEED_EXECUTION_NAME"
+  --query name --output tsv) && [[ -n "$SEED_EXECUTION_NAME" ]]; then
+  echo "Seeder execution: $SEED_EXECUTION_NAME"
+else
+  printf 'Seederの起動に失敗したか、Execution名を取得できませんでした。ログ確認へ進まず、エラーとExecution一覧を確認してください。\n' >&2
+fi
 ```
 
-Seederのログで20件投入を確認します。
+旧手順の `--env-vars` による上書きで `ContainerAppImageRequired` が出た場合は、上記の上書きなしのコマンドを使います。Job名は `ca101-queue-seeder`、Step 7で作ったコンテナー名は `queue-seeder` であり、別の名前です。実行時の上書きではコンテナーの指定に注意が必要です。
+
+起動の成否が不明な場合は、`az containerapp job execution list --name "$QUEUE_SEEDER_JOB_NAME" --resource-group "$RESOURCE_GROUP" --output table` で履歴を確認してください。起動を繰り返すと、そのたびに20件が追加投入されます。
+
+Seederのログで20件投入を確認します。短時間で終了するSeederには、`--follow`ではなく `--tail 100` を使って直近のログを取得します。
 
 ```bash
 az containerapp job logs show \
@@ -519,11 +525,23 @@ az containerapp job logs show \
   --resource-group "$RESOURCE_GROUP" \
   --execution "$SEED_EXECUTION_NAME" \
   --container queue-seeder \
-  --follow \
+  --tail 100 \
   --format text
 ```
 
 `message_enqueued`が20回表示され、最後に`seed_completed`と`"message_count": 20`が表示されれば投入完了です。
+
+`Successfully Connected to container` だけの表示はログ接続の成功であり、投入完了や失敗を示すものではありません。まだ処理中やログの反映待ちの場合があるため、SeederのExecution状態を確認し、少し時間を置いて上記のログ取得だけを再実行してください。ログ確認のためにSeederを再起動すると、さらに20件投入されます。
+
+```bash
+az containerapp job execution list \
+  --name "$QUEUE_SEEDER_JOB_NAME" \
+  --resource-group "$RESOURCE_GROUP" \
+  --query "[?name=='$SEED_EXECUTION_NAME'].{execution:name,status:properties.status,start:properties.startTime,end:properties.endTime}" \
+  --output table
+```
+
+確認中にWorkerの20 Executionがすべて完了していた場合は、Step 10ではすでに `running=0` と表示されます。その場合は再投入せず、Step 11のWorker処理ログとStep 12の完了確認へ進んでください。実行中の増減を観測したい場合は、Step 10の監視を変数読み込み済みの別ターミナルで先に開始してから、Seederを1回だけ起動します。
 
 ## Step 10. スケールアウトを観測する
 
@@ -650,4 +668,4 @@ az containerapp env logs show \
 - Queueが空になった後、新しいExecutionを作らなくしたのもKEDAの判断
 - Job定義、履歴、Blob結果はスケールイン後も残る
 
-次は [6. 問題解決と後片付け](./06-troubleshooting-cleanup.md)へ進みます。
+次は [6. エンドユーザーのJob投入・確認・停止](./06-enduser-job-execution-process.md)へ進みます。

@@ -175,6 +175,8 @@ az containerapp job create \
 
 ## Step 5. Job に Managed Identity を付ける
 
+このStepと次のRBAC設定は管理者による初期構築作業です。同じJobのExecutionを開始するたびに行う必要はありません。構築後の利用者操作と必要権限は[第6章](./06-enduser-job-execution-process.md)を参照してください。
+
 ```bash
 JOB_PRINCIPAL_ID=$(az containerapp job identity assign \
   --name "$JOB_NAME" \
