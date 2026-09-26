@@ -1,4 +1,4 @@
-# 5. KEDA オートスケール実習
+# 5. KEDA とオートスケールの利用
 
 この章では、Azure Storage Queueへ20件の作業メッセージを投入し、KEDAがQueue長を監視してContainer Apps JobのExecutionを自動的に増減させる動きを確認します。
 
