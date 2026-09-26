@@ -57,6 +57,71 @@ simulation-results/
 
 各結果には `status`、`completed_at`、`execution_name`、`replica_name`、`batch_id`、`task_id` が入ります。標準出力の `task_started`、`result_uploaded`、`task_completed` はLog Analyticsへ送られ、処理過程の確認に使います。Queueメッセージは結果保存後に削除されるため、処理完了後は入力Queueが空になります。
 
+## Microsoft Learn公式チュートリアルとの違い
+
+比較対象は、2026年9月26日時点の [Tutorial: Deploy an event-driven job by using Azure Container Apps](https://learn.microsoft.com/azure/container-apps/tutorial-event-driven-jobs) です。以下の「公式に含まれない」はMicrosoft Learn全体ではなく、このEvent-driven Jobsチュートリアルページで扱っていない内容を意味します。Private EndpointやManaged Identityの個別機能は、それぞれ別の公式ドキュメントに説明があります。
+
+### 公式チュートリアルと共通する内容
+
+| 内容 | 公式チュートリアル | この教材 |
+|---|---|---|
+| Azure Storage Queueをイベント源にする | あり | あり |
+| KEDAの`azure-queue` scalerを使う | あり | あり |
+| Queue長に応じてEvent Jobを起動する | あり | あり |
+| 1 Executionが1メッセージを処理する | あり | あり |
+| 処理完了後にQueueメッセージを削除する | あり | あり |
+| ACR上でWorkerイメージをビルドする | あり | あり |
+| Managed IdentityでACRからPullする | あり | あり |
+| Execution履歴とログを確認する | あり | あり |
+
+したがって、Event JobとKEDAの基本動作は公式チュートリアルと同じです。この教材は別のスケーリング機構を実装しているのではなく、同じContainer Apps Event Jobを閉域・パスワードレス構成へ拡張しています。
+
+### この教材で追加した、公式チュートリアルに含まれない内容
+
+| この教材の追加内容 | 公式チュートリアルとの違い | この教材で追加した理由 |
+|---|---|---|
+| VNet統合Container Apps Environment | 公式はVNet統合を構成しない | Storageへ閉域接続するため |
+| Storageの`publicNetworkAccess=Disabled` | 公式は公開ネットワークを無効化しない | 組織Policyに準拠するため |
+| Blob用とQueue用のPrivate Endpoint | 公式はPrivate Endpointを作らない | BlobとQueueの両データプレーンを閉域化するため |
+| `privatelink.blob.core.windows.net`と`privatelink.queue.core.windows.net` | 公式はPrivate DNSを構成しない | 通常のStorage FQDNをVNet内でPrivate IPへ解決するため |
+| QueueをARM管理プレーンから作成 | 公式は実行端末からStorageデータプレーンで作成する | VNet外の端末から閉域Queueへ接続せず作成するため |
+| KEDA scalerのManaged Identity認証 | 公式はQueue接続文字列をJob Secretへ保存する | Storageキーと接続文字列を使わないため |
+| WorkerのManaged IdentityによるQueue/Blobアクセス | 公式のIdentityは主にACR Pullで使用し、Queueアクセスには接続文字列を使う | データプレーンもパスワードレスにするため |
+| Storage Queue/BlobのAzure RBAC | 公式はQueue接続文字列を使うため、このRBAC構成を行わない | 最小権限でQueue操作とBlob保存を許可するため |
+| VNet内のSeeder Job | 公式はローカルCLIから1メッセージを投入する | VNet外の実行端末から閉域Queueへ直接接続しないため |
+| 20メッセージの一括投入 | 公式の確認例は1メッセージ | 複数Executionのスケールアウトを目視するため |
+| `maxExecutions=20`、`pollingInterval=10` | 公式例は最大10、60秒間隔 | 20件の増減を短時間で観測するため |
+| Running/Succeeded/Failed数の時系列監視 | 公式はExecution一覧とログを確認する | スケールアウトからゼロ復帰までを数で追うため |
+| CPU・メモリ要求量と同時実行数の関係 | 公式は各設定値の説明まで | スケール時に増える計算リソースを理解するため |
+| 処理結果をBlobへJSON保存 | 公式Workerはメッセージをログへ出して削除する | Jobの業務成果物と実行ログを分けて確認するため |
+| `batch_id/task_id`による決定的な出力パス | 公式は結果ファイルを保存しない | 再配信や再実行でも結果を上書きできるようにするため |
+| visibility timeoutとat-least-onceを考慮した処理順 | 公式も処理完了前に削除しない点は説明するが、結果保存や冪等化までは実装しない | 障害時の再配信と重複処理を理解するため |
+| Queue Private Endpoint、RBAC、KEDA不発、20同時未達の診断 | 公式は基本的な実行確認が中心 | 閉域環境固有の問題を切り分けるため |
+
+### 認証方式の重要な違い
+
+公式チュートリアルは、Storage Accountの接続文字列をContainer Apps JobのSecretへ登録し、KEDAとWorkerのQueue認証に使います。公式ページ自身も、Jobを開始できる利用者によるSecret参照リスクについて警告しています。
+
+この教材では接続文字列を取得・保存しません。ユーザー割り当てManaged Identityを次の3か所で使います。
+
+1. KEDAがQueue長を取得する
+2. SeederとWorkerがQueueへアクセスする
+3. Workerが結果をBlobへ保存し、JobがACRからイメージをPullする
+
+ネットワーク到達性はPrivate EndpointとPrivate DNS、認可はManaged IdentityとAzure RBACが担当します。この2つは別の制御なので、どちらか一方だけでは閉域Queue Jobは動きません。
+
+### 実装上の対応関係
+
+| 公式サンプル | この教材で対応する場所 |
+|---|---|
+| Queue Readerのソース | `src/keda-job/keda_job.py`の`process_one()` |
+| CLIからのメッセージ投入 | `src/keda-job/keda_job.py`の`seed()`を実行するSeeder Job |
+| Event Job作成コマンド | Step 6 |
+| メッセージ投入 | Step 9 |
+| Execution確認 | Step 10からStep 12 |
+| ログ確認 | Step 9とStep 11 |
+| リソース削除 | 第6章 |
+
 ## この実習で確認すること
 
 - KEDAは計算処理ではなく、イベント源を監視して必要な実行数を判断する

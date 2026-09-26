@@ -9,8 +9,7 @@ Azure を初めて触る人が、Ubuntu から Azure Container Apps と Containe
 3. 手動起動する Container Apps Job を作成する
 4. VNet と Private Endpoint で閉域化した Blob Storage へシミュレーション結果を保存する
 5. 実行中の Job execution を停止し、停止状態と途中結果を確認する
-6. KEDA が Storage Queue を監視して20件の Job executionを自動起動する流れを確認する
-7. 学習用 Azure リソースをまとめて削除する
+6. 学習用 Azure リソースをまとめて削除する
 
 ## 構成
 
@@ -20,8 +19,7 @@ Azure を初めて触る人が、Ubuntu から Azure Container Apps と Containe
 | 2 | [通常の Container App](docs/02-container-app.md) | 環境、Web App、Revision、ログ | 60分 |
 | 3 | [Jobs の基本](docs/03-jobs-basics.md) | Job の種類と設定 | 30分 |
 | 4 | [シミュレーション実習](docs/04-simulation-lab.md) | ACR、Storage、正常実行、Kill | 90分 |
-| 5 | [KEDA オートスケール実習](docs/05-keda-autoscaling.md) | Queue、Event Job、20並列、スケール監視 | 60分 |
-| 6 | [問題解決と後片付け](docs/06-troubleshooting-cleanup.md) | エラー調査と削除 | 20分 |
+| 5 | [問題解決と後片付け](docs/05-troubleshooting-cleanup.md) | エラー調査と削除 | 20分 |
 
 ## 前提条件
 
@@ -78,7 +76,7 @@ printf 'RESOURCE_GROUP=%s\nLOCATION=%s\nACR_NAME=%s\nSTORAGE_ACCOUNT=%s\n' \
 
 ## 費用と注意
 
-この実習では Container Apps、VNet、Storage Private Endpoint、Private DNS zone、Managed Identity、ACR Basic、Storage、Log Analytics を作成します。Private Endpoint には時間単位とデータ処理量に応じた料金が発生します。短時間の学習でも無料とは限らないため、実習後は必ず[後片付け](docs/06-troubleshooting-cleanup.md)を実施してください。
+この実習では Container Apps、VNet、Storage Private Endpoint、Private DNS zone、ACR Basic、Storage、Log Analytics を作成します。Private Endpoint には時間単位とデータ処理量に応じた料金が発生します。短時間の学習でも無料とは限らないため、実習後は必ず[後片付け](docs/05-troubleshooting-cleanup.md)を実施してください。
 
 コマンドは Bash 用です。`<...>` は自分の値へ置き換える表記です。一方、`$RESOURCE_GROUP` のような値は `set-env.sh` から読み込まれるため、そのまま実行します。
 
@@ -86,8 +84,6 @@ printf 'RESOURCE_GROUP=%s\nLOCATION=%s\nACR_NAME=%s\nSTORAGE_ACCOUNT=%s\n' \
 
 - [Azure Container Apps overview](https://learn.microsoft.com/azure/container-apps/overview)
 - [Jobs in Azure Container Apps](https://learn.microsoft.com/azure/container-apps/jobs)
-- [Tutorial: Deploy an event-driven job](https://learn.microsoft.com/azure/container-apps/tutorial-event-driven-jobs)
-- [KEDA scaling in Azure Container Apps](https://learn.microsoft.com/azure/container-apps/scale-app)
 - [Application logging](https://learn.microsoft.com/azure/container-apps/logging)
 - [Azure Container Apps virtual networks](https://learn.microsoft.com/azure/container-apps/custom-virtual-networks)
 - [Azure Private Endpoint DNS configuration](https://learn.microsoft.com/azure/private-link/private-endpoint-dns)

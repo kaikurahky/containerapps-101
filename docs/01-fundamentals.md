@@ -31,8 +31,6 @@ flowchart TD
 | Execution | Job を1回起動した実行履歴。複数回起動すれば複数できる |
 | Job Replica | 1つの Execution 内で処理を担当するコンテナー実行単位 |
 
-KEDA（Kubernetes Event-driven Autoscaling）は、Queueなどのイベント源を定期的に監視し、需要に応じてReplicaやJob Executionを増減させるオートスケーラーです。Container AppsではKEDAを自分でインストール・運用せず、スケールルールとして利用します。KEDA自身が計算を行うのではなく、「いま何個の実行を開始すべきか」を判断します。
-
 ## 1-3. App と Job の選択
 
 | 要件 | 選択 |
@@ -71,32 +69,11 @@ Job -> Private DNS -> Blob Private Endpoint -> Managed Identity と Azure RBAC -
 
 ネットワーク到達性とアクセス権は別々に必要です。Private Endpoint と Private DNS が Blob までの閉域経路を作り、Managed Identity と Azure RBAC が Job に書き込みを許可します。Storage の公開ネットワークアクセスと Blob の匿名公開は無効にします。
 
-## 1-7. KEDA と Event Job
-
-Event Jobでは、KEDAとJobコンテナーの役割が分かれます。
-
-```mermaid
-flowchart LR
-    Q[Storage Queue<br/>未処理メッセージ] -->|Queue長を定期監視| KEDA[KEDA scaler]
-    KEDA -->|必要な個数を判断| EXE[Job Executions]
-    EXE -->|1 Executionが1件処理| Q
-    EXE -->|処理結果| BLOB[Blob Storage]
-```
-
-| 担当 | 役割 |
-|---|---|
-| KEDA | Queue長を読み、何個のExecutionを開始するか判断する |
-| Container Apps | 判断された数のExecutionとReplicaを配置する |
-| Jobコンテナー | Queueから1件受信し、計算、結果保存、メッセージ削除を行う |
-
-`minExecutions=0`ならQueueが空の間は実行がゼロです。メッセージが増えるとKEDAがスケールアウトを判断し、処理後にQueueが空になると新しいExecutionを開始しなくなります。第5章では20件を投入して、この変化を観測します。
-
 ## 理解度チェック
 
 - Job と Execution の違いを説明できますか。
 - Revision と Replica の違いを説明できますか。
 - Web API と一度だけ行う計算に、それぞれ App と Job のどちらを使うか判断できますか。
 - Console log と System log の用途を説明できますか。
-- KEDAとJobコンテナーの役割の違いを説明できますか。
 
 確認できたら、[2. 通常の Container App 構築](./02-container-app.md)へ進みます。
