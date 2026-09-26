@@ -59,7 +59,7 @@ simulation-results/
 
 ## Microsoft Learn公式チュートリアルとの違い
 
-比較対象は、2026年9月26日時点の [Tutorial: Deploy an event-driven job by using Azure Container Apps](https://learn.microsoft.com/azure/container-apps/tutorial-event-driven-jobs) です。以下の「公式に含まれない」はMicrosoft Learn全体ではなく、このEvent-driven Jobsチュートリアルページで扱っていない内容を意味します。Private EndpointやManaged Identityの個別機能は、それぞれ別の公式ドキュメントに説明があります。
+比較対象は、2026年9月時点の [Tutorial: Deploy an event-driven job by using Azure Container Apps](https://learn.microsoft.com/azure/container-apps/tutorial-event-driven-jobs) です。以下の「公式に含まれない」はMicrosoft Learn全体ではなく、このEvent-driven Jobsチュートリアルページで扱っていない内容を意味します。Private EndpointやManaged Identityの個別機能は、それぞれ別の公式ドキュメントに説明があります。
 
 ### 公式チュートリアルと共通する内容
 
@@ -74,9 +74,9 @@ simulation-results/
 | Managed IdentityでACRからPullする | あり | あり |
 | Execution履歴とログを確認する | あり | あり |
 
-したがって、Event JobとKEDAの基本動作は公式チュートリアルと同じです。この教材は別のスケーリング機構を実装しているのではなく、同じContainer Apps Event Jobを閉域・パスワードレス構成へ拡張しています。
+Event JobとKEDAの基本動作は公式チュートリアルと同じですが、本内容では、同じContainer Apps Event Jobを閉域構成でパスワードレスで実行できる形へ拡張しています。
 
-### この教材で追加した、公式チュートリアルに含まれない内容
+### この教材で追加した点
 
 | この教材の追加内容 | 公式チュートリアルとの違い | この教材で追加した理由 |
 |---|---|---|

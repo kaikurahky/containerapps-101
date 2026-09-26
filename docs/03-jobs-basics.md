@@ -1,4 +1,4 @@
-# 3. Container Apps Jobs の基本
+# 3. Container Apps Jobs の基本動作
 
 ## 3-1. Job のライフサイクル
 

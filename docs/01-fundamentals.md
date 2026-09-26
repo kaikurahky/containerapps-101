@@ -1,6 +1,6 @@
 # 1. 基礎概念
 
-## 1-1. まずコンテナーとは
+## 1-1. コンテナーについて
 
 コンテナーは、アプリ本体と実行に必要なライブラリをひとまとめにした実行単位です。設計図に当たるファイルが `Dockerfile`、そこから作る読み取り専用のひな型が「コンテナーイメージ」、実際に起動したプロセスが「コンテナー」です。
 
@@ -69,11 +69,11 @@ Job -> Private DNS -> Blob Private Endpoint -> Managed Identity と Azure RBAC -
 
 ネットワーク到達性とアクセス権は別々に必要です。Private Endpoint と Private DNS が Blob までの閉域経路を作り、Managed Identity と Azure RBAC が Job に書き込みを許可します。Storage の公開ネットワークアクセスと Blob の匿名公開は無効にします。
 
-## 理解度チェック
+## 確認ポイント
 
-- Job と Execution の違いを説明できますか。
-- Revision と Replica の違いを説明できますか。
-- Web API と一度だけ行う計算に、それぞれ App と Job のどちらを使うか判断できますか。
-- Console log と System log の用途を説明できますか。
+- Job と Execution の違いを理解。
+- Revision と Replica の違いを理解。
+- Web API と一度だけ行う計算における、App と Job の使い分けを理解。
+- Console log と System log の用途を理解。
 
 確認できたら、[2. 通常の Container App 構築](./02-container-app.md)へ進みます。
