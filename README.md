@@ -1,8 +1,8 @@
 # Azure Container Apps 101
 
-Azure を初めて触る人が、Ubuntu から Azure Container Apps と Container Apps Jobs を順番に学ぶハンズオンです。
+Azure で Azure Container Apps と Container Apps Jobs を順番に理解するハンズオン教材になります。
 
-## この教材でできるようになること
+## このハンズオンの内容
 
 1. Environment、App、Revision、Replica、Job、Execution の違いを説明する
 2. HTTP でアクセスできる Container App を作成して更新する
@@ -10,8 +10,8 @@ Azure を初めて触る人が、Ubuntu から Azure Container Apps と Containe
 4. VNet と Private Endpoint で閉域化した Blob Storage へシミュレーション結果を保存する
 5. 実行中の Job execution を停止し、停止状態と途中結果を確認する
 6. 管理者の構築作業とエンドユーザーの投入・確認・取消操作を区別する
-7. CPU・Replica・VMの違いと、ワークロードプロファイル・MPIの制約を説明する
-8. 学習用 Azure リソースをまとめて削除する
+7. CPU, Replica, VMの違い、ワークロードプロファイルや制約を説明する
+8. 学習用 Azure リソースをまとめて削除
 
 ## 構成
 
@@ -20,8 +20,8 @@ Azure を初めて触る人が、Ubuntu から Azure Container Apps と Containe
 | 1 | [基礎概念](docs/01-fundamentals.md) | 用語と全体像 | 30分 |
 | 2 | [通常の Container App](docs/02-container-app.md) | 環境、Web App、Revision、ログ | 60分 |
 | 3 | [Jobs の基本](docs/03-jobs-basics.md) | Job の種類と設定 | 30分 |
-| 4 | [シミュレーション実習](docs/04-simulation-lab.md) | ACR、Storage、正常実行、Kill | 90分 |
-| 5 | [KEDA オートスケール実習](docs/05-keda-autoscaling.md) | Queue、Event Job、スケール監視 | 60分 |
+| 4 | [シミュレーション実行](docs/04-simulation-lab.md) | ACR、Storage、正常実行、Kill | 90分 |
+| 5 | [KEDA オートスケール実行](docs/05-keda-autoscaling.md) | Queue、Event Job、スケール監視 | 60分 |
 | 6 | [エンドユーザーのJob実行](docs/06-enduser-job-execution-process.md) | 必要権限、単一・スケーリングJobの投入・確認・取消 | 30分 |
 | 7 | [ジョブプロファイルの指定と留意点](docs/07-specify-job-profile.md) | Seeder、CPU・並列度、VM SKU指定の制約、MPI | 20分 |
 | 8 | [問題解決と後片付け](docs/08-troubleshooting-cleanup.md) | エラー調査と削除 | 20分 |
