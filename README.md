@@ -15,16 +15,16 @@ Azure で Azure Container Apps と Container Apps Jobs を順番に理解する�
 
 ## 構成
 
-| 順序 | 教材 | 内容 | 目安 |
-|---|---|---|---:|
-| 1 | [最初におさえるポイント](docs/01-fundamentals.md) | 用語と全体像 | 30分 |
-| 2 | [通常の Container App](docs/02-container-app.md) | 環境、Web App、Revision、ログ | 60分 |
-| 3 | [Jobs の基本](docs/03-jobs-basics.md) | Job の種類と設定 | 30分 |
-| 4 | [シミュレーション実行](docs/04-simulation-lab.md) | ACR、Storage、正常実行、Kill | 90分 |
-| 5 | [KEDA オートスケール実行](docs/05-keda-autoscaling.md) | Queue、Event Job、スケール監視 | 60分 |
-| 6 | [エンドユーザーのJob実行](docs/06-enduser-job-execution-process.md) | 必要権限、単一・スケーリングJobの投入・確認・取消 | 30分 |
-| 7 | [ジョブプロファイルの指定と留意点](docs/07-specify-job-profile.md) | Seeder、CPU・並列度、VM SKU指定の制約、MPI | 20分 |
-| 8 | [問題解決と後片付け](docs/08-troubleshooting-cleanup.md) | エラー調査と削除 | 20分 |
+| 順序 | 教材 | 内容 |
+|---|---|---|
+| 1 | [最初におさえるポイント](docs/01-fundamentals.md) | 用語と全体像 |
+| 2 | [通常の Container App](docs/02-container-app.md) | 環境、Web App、Revision、ログ |
+| 3 | [Jobs の基本](docs/03-jobs-basics.md) | Job の種類と設定 |
+| 4 | [シミュレーション実行](docs/04-simulation-lab.md) | ACR、Storage、正常実行、Kill |
+| 5 | [KEDA オートスケール実行](docs/05-keda-autoscaling.md) | Queue、Event Job、スケール監視 |
+| 6 | [エンドユーザーのJob実行](docs/06-enduser-job-execution-process.md) | 必要権限、単一・スケーリングJobの投入・確認・取消 |
+| 7 | [ジョブプロファイルの指定と留意点](docs/07-specify-job-profile.md) | Seeder、CPU・並列度、VM SKU指定の制約 |
+| 8 | [問題解決と後片付け](docs/08-troubleshooting-cleanup.md) | エラー調査と削除 |
 
 管理者が環境を構築済みの場合、エンドユーザーは第6章から参照してください。一般利用者向け受付APIは未実装のため、提供に必要な準備と、信頼済み利用者向けのCLI直接実行を分けて説明しています。以下のリソース作成・ロール割り当て権限は構築担当者向けです。
 
