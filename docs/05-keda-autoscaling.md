@@ -369,7 +369,34 @@ az role assignment create \
   --scope "$STORAGE_ID"
 ```
 
-RBACの反映には数分かかる場合があります。
+### 付与した権限を確認する
+
+3つのコマンドの実行後、同じManaged Identityにロールが割り当てられているか確認します。
+
+```bash
+az role assignment list \
+  --assignee-object-id "${KEDA_PRINCIPAL_ID:?Step 5でManaged IdentityのprincipalIdを取得してください}" \
+  --fill-principal-name false \
+  --all \
+  --query '[].{role:roleDefinitionName, scope:scope}' \
+  --output table
+```
+
+`--all` は、ACR・Storageなど個別リソースのスコープへの割り当ても表示するために必要です。省略するとサブスクリプションスコープのみが対象となり、付与済みでも何も表示されない場合があります。`--assignee-object-id` と `--fill-principal-name false` により、Microsoft Graphでの名前検索を行わずprincipalIdで確認します。
+
+次の3つのロールとスコープの組み合わせが表示されれば、この手順で必要な割り当てが登録されています。表中の変数は、実際の出力ではリソースIDとして表示されます。
+
+| role | scope | 許可する操作 |
+|---|---|---|
+| `AcrPull` | `$ACR_ID` | 対象ACRからのイメージPull |
+| `Storage Queue Data Contributor` | `$STORAGE_ID` | KEDAによるQueue長の取得、Seeder・Workerによるメッセージ操作 |
+| `Storage Blob Data Contributor` | `$STORAGE_ID` | Workerによる結果JSONの保存 |
+
+同じロール名でも、別のACRやStorageへの割り当てでは今回の対象リソースへアクセスできません。ロール名だけでなくスコープも照合してください。既存の割り当てがある場合は、3行より多く表示されることがあります。
+
+空の結果や不足がある場合は、`az account show --output table` で対象サブスクリプションを確認し、Step 5の `KEDA_PRINCIPAL_ID` 取得と各ロール付与コマンドの実行結果を確認してください。
+
+一覧への表示は割り当ての登録確認であり、実際のアクセス成功を保証するものではありません。RBACの反映には数分かかる場合があります。反映後、後続の実習でイメージPull、Queue操作、Blob保存が成功することを確認します。Private EndpointとPrivate DNSによるネットワーク到達性も別途必要です。
 
 ## Step 6. KEDAで起動するEvent Jobを作る
 
