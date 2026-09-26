@@ -22,7 +22,7 @@ Azure で Azure Container Apps と Container Apps Jobs を順番に理解する�
 | 3 | [Jobs の基本](docs/03-jobs-basics.md) | Job の種類と設定 |
 | 4 | [シミュレーション実行](docs/04-simulation-lab.md) | ACR、Storage、正常実行、Kill |
 | 5 | [KEDA オートスケール実行](docs/05-keda-autoscaling.md) | Queue、Event Job、スケール監視 |
-| 6 | [エンドユーザーのJob実行](docs/06-enduser-job-execution-process.md) | 必要権限、単一・スケーリングJobの投入・確認・取消 |
+| 6 | [エンドユーザーの Job 実行](docs/06-enduser-job-execution-process.md) | 必要権限、単一・スケーリングJobの投入・確認・取消 |
 | 7 | [ジョブプロファイルの指定と留意点](docs/07-specify-job-profile.md) | Seeder、CPU・並列度、VM SKU指定の制約 |
 | 8 | [問題解決と後片付け](docs/08-troubleshooting-cleanup.md) | エラー調査と削除 |
 

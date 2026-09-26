@@ -98,7 +98,7 @@ Event JobとKEDAの基本動作は公式チュートリアルと同じですが�
 | visibility timeoutとat-least-onceを考慮した処理順 | 公式も処理完了前に削除しない点は説明するが、結果保存や冪等化までは実装しない | 障害時の再配信と重複処理を理解するため |
 | Queue Private Endpoint、RBAC、KEDA不発、20同時未達の診断 | 公式は基本的な実行確認が中心 | 閉域環境固有の問題を切り分けるため |
 
-### 認証方式の重要な違い
+### 認証方式の違い
 
 公式チュートリアルは、Storage Accountの接続文字列をContainer Apps JobのSecretへ登録し、KEDAとWorkerのQueue認証に使います。公式ページ自身も、Jobを開始できる利用者によるSecret参照リスクについて警告しています。
 
@@ -122,7 +122,7 @@ Event JobとKEDAの基本動作は公式チュートリアルと同じですが�
 | ログ確認 | Step 9とStep 11 |
 | リソース削除 | [第8章](./08-troubleshooting-cleanup.md)（管理者向け） |
 
-## この実習で確認すること
+## このハンズオンで確認すること
 
 - KEDAは計算処理ではなく、イベント源を監視して必要な実行数を判断する
 - Event JobはCLIから開始しなくても、Queueへの投入を契機に起動する
@@ -130,7 +130,7 @@ Event JobとKEDAの基本動作は公式チュートリアルと同じですが�
 - 各Executionが1件を処理し、Queueが空になると新しいExecutionは起動されない
 - 計算リソースは実行中だけ割り当てられ、待機中はExecutionがゼロになる
 
-## 完成構成
+## 構成
 
 ```mermaid
 flowchart LR
