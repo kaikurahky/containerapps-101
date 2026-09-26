@@ -165,7 +165,8 @@ flowchart LR
 | `docs/03-jobs-basics.md` | Jobs の基本 | 承認後 |
 | `docs/04-simulation-lab.md` | 正常実行・監視・結果確認・途中停止 | 承認後 |
 | `docs/06-enduser-job-execution-process.md` | 利用者の必要権限・投入・確認・取消手順 | 作成済み |
-| `docs/07-troubleshooting-cleanup.md` | トラブル対応と後片付け | 承認後 |
+| `docs/06-specify-job-profile.md` | CPU・並列度・ワークロードプロファイル・MPIの留意点 | 作成済み |
+| `docs/08-troubleshooting-cleanup.md` | トラブル対応と後片付け | 承認後 |
 | `src/simulation/simulation.py` | 進捗、SIGTERM、結果保存を実装 | 承認後 |
 | `src/simulation/requirements.txt` | Python 依存関係 | 承認後 |
 | `src/simulation/Dockerfile` | Job 用イメージ | 承認後 |

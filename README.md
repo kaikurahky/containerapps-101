@@ -10,7 +10,8 @@ Azure を初めて触る人が、Ubuntu から Azure Container Apps と Containe
 4. VNet と Private Endpoint で閉域化した Blob Storage へシミュレーション結果を保存する
 5. 実行中の Job execution を停止し、停止状態と途中結果を確認する
 6. 管理者の構築作業とエンドユーザーの投入・確認・取消操作を区別する
-7. 学習用 Azure リソースをまとめて削除する
+7. CPU・Replica・VMの違いと、ワークロードプロファイル・MPIの制約を説明する
+8. 学習用 Azure リソースをまとめて削除する
 
 ## 構成
 
@@ -22,7 +23,8 @@ Azure を初めて触る人が、Ubuntu から Azure Container Apps と Containe
 | 4 | [シミュレーション実習](docs/04-simulation-lab.md) | ACR、Storage、正常実行、Kill | 90分 |
 | 5 | [KEDA オートスケール実習](docs/05-keda-autoscaling.md) | Queue、Event Job、スケール監視 | 60分 |
 | 6 | [エンドユーザーのJob実行](docs/06-enduser-job-execution-process.md) | 必要権限、単一・スケーリングJobの投入・確認・取消 | 30分 |
-| 7 | [問題解決と後片付け](docs/07-troubleshooting-cleanup.md) | エラー調査と削除 | 20分 |
+| 7 | [ジョブプロファイルの指定と留意点](docs/06-specify-job-profile.md) | Seeder、CPU・並列度、VM SKU指定の制約、MPI | 20分 |
+| 8 | [問題解決と後片付け](docs/08-troubleshooting-cleanup.md) | エラー調査と削除 | 20分 |
 
 管理者が環境を構築済みの場合、エンドユーザーは第6章から参照してください。一般利用者向け受付APIは未実装のため、提供に必要な準備と、信頼済み利用者向けのCLI直接実行を分けて説明しています。以下のリソース作成・ロール割り当て権限は構築担当者向けです。
 
@@ -81,7 +83,7 @@ printf 'RESOURCE_GROUP=%s\nLOCATION=%s\nACR_NAME=%s\nSTORAGE_ACCOUNT=%s\n' \
 
 ## 費用と注意
 
-この実習では Container Apps、VNet、Storage Private Endpoint、Private DNS zone、ACR Basic、Storage、Log Analytics を作成します。Private Endpoint には時間単位とデータ処理量に応じた料金が発生します。短時間の学習でも無料とは限らないため、実習後は管理者が[後片付け](docs/07-troubleshooting-cleanup.md)を実施してください。エンドユーザーは共有リソースを削除しません。
+この実習では Container Apps、VNet、Storage Private Endpoint、Private DNS zone、ACR Basic、Storage、Log Analytics を作成します。Private Endpoint には時間単位とデータ処理量に応じた料金が発生します。短時間の学習でも無料とは限らないため、実習後は管理者が[後片付け](docs/08-troubleshooting-cleanup.md)を実施してください。エンドユーザーは共有リソースを削除しません。
 
 コマンドは Bash 用です。`<...>` は自分の値へ置き換える表記です。一方、`$RESOURCE_GROUP` のような値は `set-env.sh` から読み込まれるため、そのまま実行します。
 

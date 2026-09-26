@@ -120,7 +120,7 @@ simulation-results/
 | メッセージ投入 | Step 9 |
 | Execution確認 | Step 10からStep 12 |
 | ログ確認 | Step 9とStep 11 |
-| リソース削除 | [第7章](./07-troubleshooting-cleanup.md)（管理者向け） |
+| リソース削除 | [第8章](./08-troubleshooting-cleanup.md)（管理者向け） |
 
 ## この実習で確認すること
 
