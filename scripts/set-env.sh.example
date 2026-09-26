@@ -23,6 +23,17 @@ export STORAGE_PRIVATE_DNS_ZONE="privatelink.blob.core.windows.net"
 export STORAGE_PRIVATE_DNS_LINK="link-containerapps-101"
 export STORAGE_PRIVATE_DNS_GROUP="pdzg-containerapps-101-blob"
 
+export KEDA_JOB_NAME="ca101-keda-job"
+export QUEUE_SEEDER_JOB_NAME="ca101-queue-seeder"
+export KEDA_IDENTITY_NAME="id-containerapps-101-keda"
+export KEDA_IMAGE="keda-job:v1"
+export QUEUE_NAME="keda-work-items"
+export QUEUE_PRIVATE_ENDPOINT_NAME="pe-containerapps-101-queue"
+export QUEUE_PRIVATE_CONNECTION_NAME="psc-containerapps-101-queue"
+export QUEUE_PRIVATE_DNS_ZONE="privatelink.queue.core.windows.net"
+export QUEUE_PRIVATE_DNS_LINK="link-containerapps-101-queue"
+export QUEUE_PRIVATE_DNS_GROUP="pdzg-containerapps-101-queue"
+
 SUBSCRIPTION_ID=$(az account show --query id --output tsv 2>/dev/null || true)
 if [[ -z "$SUBSCRIPTION_ID" ]]; then
   echo "Azureへログインしてから、このファイルをsourceしてください。" >&2

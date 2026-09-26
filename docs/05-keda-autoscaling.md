@@ -205,7 +205,12 @@ Environmentの`state`が`Succeeded`、`subnet`が空でないこと、Storageの
 
 実行端末はVNet外にあるため、StorageのデータプレーンではなくARM管理プレーンでQueueを作ります。
 
+第5章用の変数を読み直します。`QUEUE_NAME` の期待値は `keda-work-items` です。古い変数ファイルを使っている場合は、[テンプレート](../scripts/set-env.sh.example)の `KEDA_` と `QUEUE_` で始まる定義を [変数ファイル](../scripts/set-env.sh)へ追加してください。既存のリソース名を保持するため、ファイル全体を上書きしないでください。
+
 ```bash
+source scripts/set-env.sh
+printf 'QUEUE_NAME=%s\n' "${QUEUE_NAME:?第5章用の変数を設定してsourceしてください}"
+
 STORAGE_ID=$(az storage account show \
   --name "$STORAGE_ACCOUNT" \
   --resource-group "$RESOURCE_GROUP" \
@@ -213,16 +218,18 @@ STORAGE_ID=$(az storage account show \
 
 az rest \
   --method put \
-  --url "${STORAGE_ID}/queueServices/default/queues/${QUEUE_NAME}?api-version=2023-05-01" \
+  --url "${STORAGE_ID:?Storage IDを取得してください}/queueServices/default/queues/${QUEUE_NAME:?第5章用の変数を設定してsourceしてください}?api-version=2023-05-01" \
   --body '{}'
 ```
+
+`HttpResourceNotFound` のURLが `.../queues/?api-version=...` となる場合は、Queue名が空です。これはPrivate EndpointやRBACの問題ではありません。変数を設定・再読み込みしてから再実行してください。
 
 作成結果を管理プレーンで確認します。
 
 ```bash
 az rest \
   --method get \
-  --url "${STORAGE_ID}/queueServices/default/queues/${QUEUE_NAME}?api-version=2023-05-01" \
+  --url "${STORAGE_ID:?Storage IDを取得してください}/queueServices/default/queues/${QUEUE_NAME:?第5章用の変数を設定してsourceしてください}?api-version=2023-05-01" \
   --query '{name:name,type:type}' \
   --output table
 ```

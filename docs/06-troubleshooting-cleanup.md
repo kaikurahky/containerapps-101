@@ -110,6 +110,11 @@ az containerapp env logs show \
   --resource-group "$RESOURCE_GROUP" \
   --tail 100
 
+az role assignment list \
+  --assignee "$JOB_PRINCIPAL_ID" \
+  --scope "$ACR_ID" \
+  --output table
+
 az containerapp job registry list \
   --name "$JOB_NAME" \
   --resource-group "$RESOURCE_GROUP" \
