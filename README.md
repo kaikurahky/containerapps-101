@@ -23,7 +23,7 @@ Azure を初めて触る人が、Ubuntu から Azure Container Apps と Containe
 | 4 | [シミュレーション実習](docs/04-simulation-lab.md) | ACR、Storage、正常実行、Kill | 90分 |
 | 5 | [KEDA オートスケール実習](docs/05-keda-autoscaling.md) | Queue、Event Job、スケール監視 | 60分 |
 | 6 | [エンドユーザーのJob実行](docs/06-enduser-job-execution-process.md) | 必要権限、単一・スケーリングJobの投入・確認・取消 | 30分 |
-| 7 | [ジョブプロファイルの指定と留意点](docs/06-specify-job-profile.md) | Seeder、CPU・並列度、VM SKU指定の制約、MPI | 20分 |
+| 7 | [ジョブプロファイルの指定と留意点](docs/07-specify-job-profile.md) | Seeder、CPU・並列度、VM SKU指定の制約、MPI | 20分 |
 | 8 | [問題解決と後片付け](docs/08-troubleshooting-cleanup.md) | エラー調査と削除 | 20分 |
 
 管理者が環境を構築済みの場合、エンドユーザーは第6章から参照してください。一般利用者向け受付APIは未実装のため、提供に必要な準備と、信頼済み利用者向けのCLI直接実行を分けて説明しています。以下のリソース作成・ロール割り当て権限は構築担当者向けです。
