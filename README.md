@@ -17,7 +17,7 @@ Azure で Azure Container Apps と Container Apps Jobs を順番に理解する�
 
 | 順序 | 教材 | 内容 | 目安 |
 |---|---|---|---:|
-| 1 | [基礎概念](docs/01-fundamentals.md) | 用語と全体像 | 30分 |
+| 1 | [最初におさえるポイント](docs/01-fundamentals.md) | 用語と全体像 | 30分 |
 | 2 | [通常の Container App](docs/02-container-app.md) | 環境、Web App、Revision、ログ | 60分 |
 | 3 | [Jobs の基本](docs/03-jobs-basics.md) | Job の種類と設定 | 30分 |
 | 4 | [シミュレーション実行](docs/04-simulation-lab.md) | ACR、Storage、正常実行、Kill | 90分 |
